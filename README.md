@@ -1,91 +1,200 @@
 # RFID Tag Mask Recovery Using the Bernstein–Vazirani Algorithm
 
-**Classical vs. Quantum Query Complexity Demonstration**  
-**Team Members:** Athira Arun, Chelsea Reena
+An educational quantum-computing project that explores how the **Bernstein–Vazirani algorithm** can recover a hidden binary mask using an oracle-based mathematical model inspired by RFID tag identification.
 
----
+## Overview
 
-## 📌 Project Overview
-This academic project demonstrates the quantum query complexity advantage of the **Bernstein–Vazirani algorithm** compared to classical sequential probing when recovering a hidden 6-bit binary mask $s \in \{0, 1\}^6$ from a simulated RFID tag.
+Radio Frequency Identification (RFID) systems use radio waves to identify and track tagged objects. This project explores a simplified, RFID-inspired problem: recovering a hidden binary string using classical computation and the Bernstein–Vazirani quantum algorithm.
 
-In Radio-Frequency Identification (RFID) systems, a transponder answers challenge vectors $x \in \{0, 1\}^6$ via the parity challenge-response function:
-$$f_s(x) = (s \cdot x) \pmod 2 = \bigoplus_{i=0}^{5} (s_i \land x_i)$$
+The project demonstrates the difference between classical and quantum query complexity through an interactive web application, with an emphasis on algorithm visualization, binary-mask recovery, and the fundamentals of quantum computing.
 
-The goal is to determine the secret mask $s$ with the minimum number of oracle evaluations.
+> **Disclaimer:** This project is an educational simulation of a mathematical model. It does not attack, clone, or recover secret keys from real-world RFID devices.
 
----
+## Objectives
 
-## ⚡ Classical vs. Quantum Query Complexity
+- Understand the Bernstein–Vazirani quantum algorithm.
+- Model a hidden binary mask as a mathematical oracle function.
+- Compare classical and quantum oracle query requirements.
+- Explore binary strings, parity calculations, and quantum measurement outcomes.
+- Provide a user-friendly interface for experimenting with the problem.
 
-| Metric | Classical Probing | Quantum Bernstein–Vazirani |
-| :--- | :--- | :--- |
-| **Oracle Queries** | **6 queries** ($n=6$) | **1 query per circuit execution** |
-| **Query Complexity** | $\mathcal{O}(n)$ | $\mathcal{O}(1)$ |
-| **Strategy** | Probing standard basis vectors $e_0 \dots e_5$ | Quantum superposition & phase kickback |
-| **Query Reduction** | Baseline | **83.33% fewer queries** |
+## How It Works
 
-> **Note on Query Advantage:** The 83.33% query reduction is an information-theoretic query complexity advantage ($1$ query vs. $6$ queries), demonstrating the power of quantum interference over classical Shannon information limits ($1$ bit per classical query).
+The hidden binary mask is represented by an \(n\)-bit string:
 
----
+\[
+s = s_0s_1\ldots s_{n-1}
+\]
 
-## 🔬 System Architecture & Circuit
+The oracle evaluates the bitwise inner product modulo two:
 
-The application includes an exact 7-qubit quantum state-vector simulator ($2^7 = 128$ complex amplitudes):
-1. **Register Preparation:** Initializes 6 input qubits to $|000000\rangle$ and 1 target ancilla qubit to $|1\rangle$.
-2. **Superposition:** Applies Hadamard transform $H^{\otimes 7}$, putting inputs into equal superposition and the ancilla into $|-\rangle = \frac{|0\rangle - |1\rangle}{\sqrt{2}}$.
-3. **Oracle Evaluation ($U_f$):** Evaluates $U_f |x, y\rangle = |x, y \oplus f(x)\rangle$. Through **phase kickback**, the ancilla $|-\rangle$ induces an exact phase shift $(-1)^{s \cdot x}$ onto the register without altering the ancilla.
-4. **Interference:** Applies $H^{\otimes 6}$ on the input register, causing total destructive interference for all $y \ne s$ and $100\%$ constructive interference on $|s\rangle$.
-5. **Measurement:** Measuring the 6 input qubits deterministically yields the hidden secret mask $s$.
+\[
+f_s(x) = s \cdot x \pmod 2
+\]
 
----
+Here, \(s\) is the hidden mask and \(x\) is a binary input string. The oracle returns the parity of the bitwise products.
 
-## 🚀 Key Features
+### Example
 
-- **Interactive Simulation Controls:** Configure any 6-bit mask, presets (`110101` default, `011010`), shot counts (100, 512, 1024, 2048), and optional realistic depolarizing noise model.
-- **Results Summary:** Instant verification and side-by-side comparison of classical and quantum outcomes.
-- **Interactive Boolean Oracle:** Directly test any challenge vector $x$ against the active mask.
-- **Dynamic Quantum Circuit Diagram:** SVG circuit automatically drawing the active CNOT gates for the selected mask.
-- **64-State Probability Analysis:** Comprehensive table of all $2^6 = 64$ basis states comparing theoretical vs. simulated probabilities and measured counts.
-- **Graphical Visualizations:** Measurement frequencies, comparative probability distributions, and query reduction charts.
-- **Downloads & Exports:**
-  - `Results CSV` (All 64 bitstrings with theoretical and empirical probabilities and counts)
-  - `Summary TXT` (Full experimental verification report)
-  - `Probability Chart PNG` (High-resolution distribution chart)
-  - `Quantum Circuit PNG` (Exported quantum circuit schematic)
+For the six-bit mask `110101`:
 
----
+- **Input:** A six-bit binary string.
+- **Oracle:** Computes the inner product modulo two.
+- **Goal:** Recover the hidden mask.
+- **Expected ideal output:** `110101`.
 
-## 💻 Tech Stack & Installation
+### Classical vs. Quantum Approach
 
-- **Framework:** React 19, TypeScript, Vite
-- **Styling:** Tailwind CSS (Light mode academic design)
-- **Icons:** Lucide React
+| Approach | Oracle queries | Principle |
+|---|---:|---|
+| Classical deterministic | 6 for a six-bit mask | Query each standard basis vector |
+| Bernstein–Vazirani quantum algorithm | 1 per circuit execution | Quantum superposition and phase kickback |
 
-### Getting Started
+For an \(n\)-bit mask, the standard deterministic classical approach requires \(n\) oracle queries, while the Bernstein–Vazirani algorithm requires one oracle query per circuit execution in the ideal model.
+
+This is a comparison of **oracle query complexity**, not a claim that every quantum implementation runs faster in wall-clock time.
+
+## Features
+
+The following features can be documented as implemented once they are available and tested in the application:
+
+- Interactive web interface for binary-mask experiments.
+- Secret-mask input and validation.
+- Classical oracle-query demonstration.
+- Bernstein–Vazirani algorithm visualization.
+- Quantum circuit and measurement-result display, if supported by the implementation.
+- Probability analysis and classical-versus-quantum comparison, if implemented.
+- Responsive interface for convenient experimentation.
+
+## Technology Stack
+
+| Technology | Purpose |
+|---|---|
+| React | User interface |
+| TypeScript | Type-safe application development |
+| Vite | Development server and build tooling |
+| Tailwind CSS | Interface styling |
+| Lucide React | Interface icons |
+| Google GenAI SDK | Available dependency; used only where integrated into the application |
+
+**Quantum simulation:** A real Qiskit-based simulation requires a separate Python/Qiskit implementation or an appropriately configured backend. Do not assume that installing this frontend automatically runs Qiskit.
+
+## Getting Started
+
+### Prerequisites
+
+Install the following software:
+
+- [Node.js](https://nodejs.org/) — use a version compatible with the project's Vite requirements.
+- npm — included with Node.js.
+- Git — to clone the repository.
+
+### 1. Clone the repository
 
 ```bash
-# Clone the repository
-git clone https://github.com/athiraarun06/<your-repo-name>.git
-cd <your-repo-name>
+git clone https://github.com/athiraarun06/RFID-QUANTUM.git
+```
 
-# Install dependencies
+### 2. Navigate to the project
+
+```bash
+cd RFID-QUANTUM
+```
+
+### 3. Install dependencies
+
+```bash
 npm install
+```
 
-# Start local development server
+### 4. Start the development server
+
+```bash
 npm run dev
 ```
 
-Open your browser at `http://localhost:3000`.
+Open the local URL printed in your terminal, typically:
 
-### Build for Production
+```text
+http://localhost:3000/
+```
+
+### 5. Build for production
 
 ```bash
 npm run build
+```
+
+To preview the production build locally:
+
+```bash
 npm run preview
 ```
 
+## Project Structure
+
+The exact files may evolve as the project develops.
+
+```text
+RFID-QUANTUM/
+├── src/
+│   ├── App.tsx
+│   └── ...                 # Application components and logic
+├── index.html
+├── package.json
+├── package-lock.json
+├── tsconfig.json
+├── vite.config.ts
+└── README.md
+```
+
+## Mathematical Background
+
+The Bernstein–Vazirani algorithm solves a hidden-string problem using a quantum oracle.
+
+Its main steps are:
+
+1. Initialize the input qubits and an ancilla qubit.
+2. Apply Hadamard gates to prepare superposition.
+3. Apply the oracle encoding the hidden mask.
+4. Use phase kickback to encode the mask into the input register.
+5. Apply Hadamard gates to the input register again.
+6. Measure the input qubits to recover the hidden string.
+
+For an ideal noiseless implementation, the measurement returns the hidden mask with probability 1.
+
+Real devices and noisy simulations may produce different results.
+
+## Scope and Limitations
+
+- The RFID connection is a simplified mathematical model for educational purposes.
+- The oracle is assumed to be available; constructing or accessing a real RFID protocol is outside the scope of the model.
+- Quantum query complexity does not automatically imply practical runtime or hardware advantages.
+- Simulation results depend on the actual algorithm implementation, simulator, and configuration.
+- Real RFID security depends on the device, protocol, authentication mechanism, and threat model.
+
+## Future Improvements
+
+- Integrate a verified Qiskit quantum-circuit simulator.
+- Display the generated quantum circuit and measurement histogram.
+- Add configurable secret-mask lengths and shot counts.
+- Compare theoretical probabilities with simulated measurements.
+- Export experiment results for further analysis.
+- Add automated tests for mask recovery and oracle behavior.
+
+## Educational Use
+
+This project is intended for learning about quantum algorithms, oracle models, and the differences between classical and quantum computation. It is not intended to bypass RFID authentication or compromise deployed systems.
+
+## Authors
+
+**Athira Arun** and **Chelsea Reena**
+
+## License
+
+A license has not yet been specified. Add a `LICENSE` file before distributing the project under an open-source license.
+
 ---
 
-## 👥 Authors & Credits
-- **Athira Arun**
-- **Chelsea Reena**
+*Exploring the intersection of quantum computing, binary information, and RFID-inspired identification through an interactive educational model.*
+
