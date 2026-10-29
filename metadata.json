@@ -1,0 +1,6 @@
+{
+  "name": "RFID Tag Mask Recovery - Bernstein-Vazirani",
+  "description": "Educational quantum simulator demonstrating 6-bit RFID tag mask recovery using the Bernstein–Vazirani algorithm in 1 query versus 6 classical queries.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
